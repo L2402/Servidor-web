@@ -1,4 +1,3 @@
-// src/types/reserva.type.ts
 import { ObjectType, Field, ID, Int } from '@nestjs/graphql';
 import { FuncionType } from './funcion.type';
 import { UserType } from './user.type';

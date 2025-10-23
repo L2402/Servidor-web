@@ -1,4 +1,3 @@
-// src/types/pelicula.type.ts
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { FuncionType } from './funcion.type';
 

@@ -1,26 +1,52 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAnalyticsInput } from './dto/create-analytics.input';
-import { UpdateAnalyticsInput } from './dto/update-analytics.input';
+import { AnalyticsMarcoService } from './analytics-marco.service';
+import { AnalyticsJostinService } from './analytics-jostin.service';
+import { AnalyticsJeremyService } from './analytics-jeremy.service';
 
 @Injectable()
 export class AnalyticsService {
-  create(createAnalyticsInput: CreateAnalyticsInput) {
-    return 'This action adds a new analytics';
-  }
+    constructor(
+        private readonly marcoService: AnalyticsMarcoService,
+        private readonly jostinService: AnalyticsJostinService,
+        private readonly jeremyService: AnalyticsJeremyService,
+    ) { }
 
-  findAll() {
-    return `This action returns all analytics`;
-  }
+    // Marco: Consultas de Información Agregada
+    async getCarteleraCompleta() {
+        return this.marcoService.getCarteleraCompleta();
+    }
 
-  findOne(id: number) {
-    return `This action returns a #${id} analytics`;
-  }
+    async getOcupacionSalas() {
+        return this.marcoService.getOcupacionSalas();
+    }
 
-  update(id: number, updateAnalyticsInput: UpdateAnalyticsInput) {
-    return `This action updates a #${id} analytics`;
-  }
+    async getHistorialUsuario(usuarioId: string) {
+        return this.marcoService.getHistorialUsuario(usuarioId);
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} analytics`;
-  }
+    // Jostin: Consultas de Análisis de Negocio
+    async getPeliculasMasPopulares(limite: number) {
+        return this.jostinService.getPeliculasMasPopulares(limite);
+    }
+
+    async getRendimientoPorHorario() {
+        return this.jostinService.getRendimientoPorHorario();
+    }
+
+    async getAnalisisIngresos(fechaInicio: Date, fechaFin: Date) {
+        return this.jostinService.getAnalisisIngresos(fechaInicio, fechaFin);
+    }
+
+    // Jeremy: Consultas de Búsqueda y Filtrado Avanzado
+    async buscarFunciones(filtros: any) {
+        return this.jeremyService.buscarFunciones(filtros);
+    }
+
+    async getClientesFrecuentes(filtros: any) {
+        return this.jeremyService.getClientesFrecuentes(filtros);
+    }
+
+    async getDisponibilidadFunciones(filtros: any) {
+        return this.jeremyService.getDisponibilidadFunciones(filtros);
+    }
 }

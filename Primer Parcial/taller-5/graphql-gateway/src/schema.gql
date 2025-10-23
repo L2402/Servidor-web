@@ -2,6 +2,17 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type AnalisisIngresosType {
+  desglosePorPelicula: [IngresosPorPeliculaType!]!
+  desglosePorSala: [IngresosPorSalaType!]!
+  ingresoPromedioPorDia: Float!
+  ingresosTotales: Float!
+  periodo: String!
+  ticketPromedio: Float!
+  totalAsientosVendidos: Int!
+  totalReservas: Int!
+}
+
 type AsientoType {
   estado: String!
   id_asiento: ID!
@@ -10,10 +21,58 @@ type AsientoType {
   sala: SalaType
 }
 
+input BusquedaFuncionesInput {
+  asientosMinimosDisponibles: Int
+  fechaFin: DateTime
+  fechaInicio: DateTime
+  genero: String
+  orden: String
+  ordenarPor: String
+  peliculaId: String
+  precioMaximo: Float
+  precioMinimo: Float
+  salaId: String
+}
+
+type CarteleraType {
+  funcionesDisponibles: [FuncionCarteleraType!]!
+  pelicula: PeliculaType!
+  precioMaximo: Float!
+  precioMinimo: Float!
+  totalFunciones: Int!
+}
+
+type ClienteFrecuenteType {
+  correo: String!
+  diasDesdeUltimaReserva: Int!
+  gastoPromedioPorReserva: Float!
+  gastoTotal: Float!
+  generosPreferidos: [String!]!
+  id_usuario: ID!
+  nombre: String!
+  peliculasMasVistas: [PeliculaType!]!
+  totalReservas: Int!
+  ultimaReserva: DateTime!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
+type DisponibilidadFuncionType {
+  fecha: DateTime!
+  funciones: [FuncionDisponibleType!]!
+  totalFuncionesDisponibles: Int!
+}
+
+input DisponibilidadFuncionesInput {
+  asientosRequeridos: Int
+  clasificacion: String
+  fecha: DateTime!
+  genero: String
+  presupuestoMaximo: Float
+}
 
 type FacturaType {
   fecha_emision: DateTime!
@@ -23,28 +82,47 @@ type FacturaType {
   total: Float!
 }
 
-type FuncionDashboardType {
-  asientos_disponibles: Int!
-  asientos_reservados: Int!
-  capacidad_sala: Int!
-  fecha_hora: DateTime!
-  genero_pelicula: String!
-  id_funcion: ID!
-  ingreso_estimado: Float!
-  nombre_sala: String!
-  porcentaje_ocupacion: Float!
-  precio: Float!
-  titulo_pelicula: String!
-  total_reservas: Int!
+input FiltroClientesFrecuentesInput {
+  fechaFin: DateTime
+  fechaInicio: DateTime
+  gastoMinimo: Float
+  limite: Int! = 10
+  minimoReservas: Int
 }
 
-type FuncionResumenType {
+type FuncionBusquedaType {
+  asientosDisponibles: Int!
+  capacidadSala: Int!
   fecha_hora: DateTime!
   id_funcion: ID!
-  nombre_sala: String!
-  ocupacion: Float!
+  nombreSala: String!
+  pelicula: PeliculaType!
+  porcentajeDisponibilidad: Float!
   precio: Float!
-  reservas: Int!
+}
+
+type FuncionCarteleraType {
+  asientosDisponibles: Int!
+  fecha_hora: DateTime!
+  id_funcion: ID!
+  precio: Float!
+  sala: SalaType!
+}
+
+type FuncionDisponibleType {
+  asientosDisponibles: Int!
+  costoTotal: Float!
+  funcion: FuncionType!
+  razonRecomendacion: String
+  recomendada: Boolean!
+}
+
+type FuncionOcupacionType {
+  asientosReservados: Int!
+  fecha_hora: DateTime!
+  id_funcion: ID!
+  pelicula: PeliculaType!
+  reservasCount: Int!
 }
 
 type FuncionType {
@@ -56,18 +134,47 @@ type FuncionType {
   sala: SalaType
 }
 
-type PeliculaRendimientoType {
-  clasificacion: String
-  descripcion: String
-  funciones: [FuncionResumenType!]!
-  funciones_activas: Int!
-  genero: String!
-  id_pelicula: ID!
-  ingreso_total: Float!
-  promedio_ocupacion: Float!
-  titulo: String!
-  total_funciones: Int!
-  total_reservas: Int!
+type HistorialUsuarioType {
+  correo: String!
+  gastoTotal: Float!
+  id_usuario: ID!
+  nombre: String!
+  reservas: [ReservaDetalladaType!]!
+  totalReservas: Int!
+}
+
+type IngresosPorPeliculaType {
+  ingresos: Float!
+  pelicula: PeliculaType!
+  porcentajeDelTotal: Float!
+  reservas: Int!
+}
+
+type IngresosPorSalaType {
+  funciones: Int!
+  id_sala: ID!
+  ingresos: Float!
+  nombreSala: String!
+  porcentajeDelTotal: Float!
+}
+
+type OcupacionSalaType {
+  asientosReservados: Int!
+  funcionesDetalle: [FuncionOcupacionType!]!
+  porcentajeOcupacion: Float!
+  sala: SalaType!
+  totalFunciones: Int!
+  totalReservas: Int!
+}
+
+type PeliculaPopularType {
+  ingresosTotales: Float!
+  pelicula: PeliculaType!
+  promedioAsientosPorFuncion: Float!
+  tasaOcupacion: Float!
+  totalAsientosVendidos: Int!
+  totalFunciones: Int!
+  totalReservas: Int!
 }
 
 type PeliculaType {
@@ -80,35 +187,72 @@ type PeliculaType {
 }
 
 type Query {
-  asiento(id: String!): AsientoType!
+  """Análisis completo de ingresos con KPIs y desgloses por película y sala"""
+  analisisIngresos(fechaFin: DateTime!, fechaInicio: DateTime!): AnalisisIngresosType!
+  asiento(id: ID!): AsientoType!
   asientos: [AsientoType!]!
-  asientosBySala(salaId: String!): [AsientoType!]!
-  factura(id: String!): FacturaType!
-  facturaByReserva(reservaId: String!): FacturaType
+
+  """
+  Búsqueda avanzada de funciones con filtros múltiples, ordenamiento y disponibilidad en tiempo real
+  """
+  buscarFunciones(filtros: BusquedaFuncionesInput!): [FuncionBusquedaType!]!
+
+  """
+  Obtiene la cartelera completa con todas las funciones disponibles, precios y disponibilidad de asientos
+  """
+  carteleraCompleta: [CarteleraType!]!
+
+  """Análisis de clientes frecuentes con patrones de consumo y preferencias"""
+  clientesFrecuentes(filtros: FiltroClientesFrecuentesInput!): [ClienteFrecuenteType!]!
+
+  """
+  Consulta de disponibilidad de funciones con filtros avanzados y recomendaciones inteligentes
+  """
+  disponibilidadFunciones(filtros: DisponibilidadFuncionesInput!): DisponibilidadFuncionType!
+  factura(id: ID!): FacturaType!
   facturas: [FacturaType!]!
-  funcion(id: String!): FuncionType!
-  funcionDashboard(idFuncion: String!): FuncionDashboardType!
+  funcion(id: ID!): FuncionType!
   funciones: [FuncionType!]!
-  funcionesByPelicula(peliculaId: String!): [FuncionType!]!
-  funcionesBySala(salaId: String!): [FuncionType!]!
-  pelicula(id: String!): PeliculaType!
-  peliculaRendimiento(idPelicula: String!): PeliculaRendimientoType!
+
+  """
+  Historial completo de un usuario con todas sus reservas, películas vistas y gastos
+  """
+  historialUsuario(usuarioId: String!): HistorialUsuarioType!
+
+  """
+  Análisis de ocupación de todas las salas con porcentajes y detalles de funciones
+  """
+  ocupacionSalas: [OcupacionSalaType!]!
+  pelicula(id: ID!): PeliculaType!
   peliculas: [PeliculaType!]!
-  reporte(id: String!): ReporteType!
+
+  """Top de películas más populares con estadísticas de ventas y ocupación"""
+  peliculasMasPopulares(limite: Float! = 10): [PeliculaPopularType!]!
+
+  """
+  Análisis de rendimiento de funciones agrupadas por rangos horarios (mañana, tarde, noche)
+  """
+  rendimientoPorHorario: [RendimientoHorarioType!]!
+  reporte(id: ID!): ReporteType!
   reportes: [ReporteType!]!
-  reportesByAdmin(adminId: String!): [ReporteType!]!
-  reserva(id: String!): ReservaType!
-  reservaAsiento(id: String!): ReservaAsientoType!
+  reserva(id: ID!): ReservaType!
+  reservaAsiento(id: ID!): ReservaAsientoType!
   reservas: [ReservaType!]!
-  reservasAsientos: [ReservaAsientoType!]!
-  reservasAsientosByReserva(reservaId: String!): [ReservaAsientoType!]!
-  reservasByFuncion(funcionId: String!): [ReservaType!]!
-  reservasByUsuario(usuarioId: String!): [ReservaType!]!
-  sala(id: String!): SalaType!
+  reservasAsiento: [ReservaAsientoType!]!
+  sala(id: ID!): SalaType!
   salas: [SalaType!]!
-  user(id: String!): UserType!
+  user(id: ID!): UserType!
   users: [UserType!]!
-  usuarioReporteCompleto(idUsuario: String!, limite: Int = 5): UsuarioReporteCompletoType!
+}
+
+type RendimientoHorarioType {
+  ingresosTotales: Float!
+  peliculasMasVistas: [PeliculaType!]!
+  promedioIngresosPorFuncion: Float!
+  rangoHorario: String!
+  tasaOcupacionPromedio: Float!
+  totalFunciones: Int!
+  totalReservas: Int!
 }
 
 type ReporteType {
@@ -124,15 +268,16 @@ type ReservaAsientoType {
 }
 
 type ReservaDetalladaType {
+  asientosReservados: [String!]!
   cantidad_asientos: Int!
   estado: String!
-  fecha_hora_funcion: DateTime!
+  fecha_emision_factura: DateTime
+  fecha_funcion: DateTime!
   id_reserva: ID!
-  metodo_pago: String
-  nombre_sala: String!
-  numeros_asientos: [String!]!
-  titulo_pelicula: String!
-  total_pagado: Float
+  pelicula: PeliculaType!
+  precioFuncion: Float!
+  sala: SalaType!
+  totalPagado: Float
 }
 
 type ReservaType {
@@ -159,19 +304,6 @@ type UserType {
   correo: String!
   id_usuario: ID!
   nombre: String!
-  reportes: [ReporteType!]
   reservas: [ReservaType!]
   rol: String!
-}
-
-type UsuarioReporteCompletoType {
-  correo: String!
-  gasto_total: Float!
-  id_usuario: ID!
-  nombre: String!
-  reservas_activas: Int!
-  reservas_canceladas: Int!
-  rol: String!
-  total_reservas: Int!
-  ultimas_reservas: [ReservaDetalladaType!]!
 }

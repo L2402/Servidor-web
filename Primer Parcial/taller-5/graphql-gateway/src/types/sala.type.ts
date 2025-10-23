@@ -1,4 +1,3 @@
-// src/types/sala.type.ts
 import { ObjectType, Field, ID, Int } from '@nestjs/graphql';
 import { AsientoType } from './asiento.type';
 import { FuncionType } from './funcion.type';

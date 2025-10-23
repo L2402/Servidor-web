@@ -1,4 +1,3 @@
-// src/types/factura.type.ts
 import { ObjectType, Field, ID, Float } from '@nestjs/graphql';
 import { ReservaType } from './reserva.type';
 

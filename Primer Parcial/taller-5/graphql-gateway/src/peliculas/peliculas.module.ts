@@ -1,10 +1,10 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { PeliculasService } from './peliculas.service';
 import { PeliculasResolver } from './peliculas.resolver';
-import { HttpModule } from '@nestjs/axios';
+import { FuncionModule } from '../funcion/funcion.module';
 
 @Module({
-  imports: [HttpModule],
+  imports: [forwardRef(() => FuncionModule)],
   providers: [PeliculasResolver, PeliculasService],
   exports: [PeliculasService],
 })

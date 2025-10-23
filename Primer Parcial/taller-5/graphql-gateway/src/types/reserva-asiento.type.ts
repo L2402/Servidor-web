@@ -1,4 +1,3 @@
-// src/types/reserva-asiento.type.ts
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { ReservaType } from './reserva.type';
 import { AsientoType } from './asiento.type';
