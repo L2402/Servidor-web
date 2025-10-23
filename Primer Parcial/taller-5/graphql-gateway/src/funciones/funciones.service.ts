@@ -1,26 +1,37 @@
 import { Injectable } from '@nestjs/common';
-import { CreateFuncioneInput } from './dto/create-funcione.input';
-import { UpdateFuncioneInput } from './dto/update-funcione.input';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class FuncionesService {
-  create(createFuncioneInput: CreateFuncioneInput) {
-    return 'This action adds a new funcione';
+  constructor(private readonly httpService: HttpService) {}
+
+  async findAll() {
+    const response = await firstValueFrom(
+      this.httpService.get('/funcion')
+    );
+    return response.data;
   }
 
-  findAll() {
-    return `This action returns all funciones`;
+  async findOne(id: string) {
+    const response = await firstValueFrom(
+      this.httpService.get(`/funcion/${id}`)
+    );
+    return response.data;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} funcione`;
+  async findByPelicula(peliculaId: string) {
+    const response = await firstValueFrom(
+      this.httpService.get(`/funcion?pelicula=${peliculaId}`)
+    );
+    return response.data;
   }
 
-  update(id: number, updateFuncioneInput: UpdateFuncioneInput) {
-    return `This action updates a #${id} funcione`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} funcione`;
+  async findBySala(salaId: string) {
+    const response = await firstValueFrom(
+      this.httpService.get(`/funcion?sala=${salaId}`)
+    );
+    return response.data;
   }
 }
+
