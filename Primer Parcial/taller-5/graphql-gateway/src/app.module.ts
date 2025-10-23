@@ -4,6 +4,16 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { HttpModule } from '@nestjs/axios';
 import { join } from 'path';
 
+import { ReportesModule } from './reportes/reportes.module';
+import { FacturasModule } from './facturas/facturas.module';
+import { ReservasAsientosModule } from './reservas-asientos/reservas-asientos.module';
+import { ReservasModule } from './reservas/reservas.module';
+import { FuncionesModule } from './funciones/funciones.module';
+import { PeliculasModule } from './peliculas/peliculas.module';
+import { AsientosModule } from './asientos/asientos.module';
+import { UsersModule } from './users/users.module';
+import { SalasModule } from './salas/salas.module';
+
 @Module({
   imports: [
     GraphQLModule.forRoot({
@@ -17,7 +27,16 @@ import { join } from 'path';
       timeout: 5000,
       maxRedirects: 5,
     }),
-    // Aquí se importarán los módulos de resolvers
+    SalasModule,
+    UsersModule,
+    AsientosModule,
+    PeliculasModule,
+    FuncionesModule,
+    ReservasModule,
+    ReservasAsientosModule,
+    FacturasModule,
+    ReportesModule,
   ],
+  providers: [],
 })
 export class AppModule {}
